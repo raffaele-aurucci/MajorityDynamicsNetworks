@@ -1,7 +1,7 @@
 import networkx as nx
 import matplotlib.pyplot as plt
 
-graph = nx.Graph()
+G = nx.Graph()
 
 with open('datasets/out.ego-facebook', 'r') as f:
     next(f)  # salta la prima riga
@@ -9,8 +9,7 @@ with open('datasets/out.ego-facebook', 'r') as f:
         parts = line.strip().split()
         if len(parts) == 2:
             u, v = map(int, parts)
-            graph.add_edge(u, v)
-
+            G.add_edge(u, v)
 
 def graph_info(G):
     return (
@@ -23,11 +22,16 @@ def graph_info(G):
         f"Diameter: {nx.diameter(G)}\n"
     )
 
-print(graph_info(graph))
+print(graph_info(G))
 
 # Fixed layout with seed
-pos = nx.spring_layout(graph, seed=28)
+# pos = nx.spring_layout(graph, seed=28)
 
 # Visualization graph
-nx.draw(graph, pos, node_size=10, with_labels=True, font_size=2)
-plt.show()
+# nx.draw(graph, pos, node_size=10, with_labels=True, font_size=2)
+# plt.show()
+
+
+# seed_set = algorithms.greedy_seed_set(G, 100, cost_function.cost_bridge_capped)
+# print("Seed set selected: ", seed_set)
+

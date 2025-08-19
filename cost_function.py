@@ -11,7 +11,7 @@ def half_node_degree_cost(G: nx.Graph, node) -> int:
     return math.ceil(G.degree(node) / 2)
 
 # Cost bridge
-def cost_bridge_capped(G: nx.Graph, node, H: int = 5, tau: int = 20) -> int:
+def cost_bridge_capped(G: nx.Graph, H: int = 5, tau: int = 20) -> dict:
     """
         Computes a cost for each node in a graph based on edge centrality
         and node degree, with a maximum cap and hub penalty.
@@ -51,8 +51,10 @@ def cost_bridge_capped(G: nx.Graph, node, H: int = 5, tau: int = 20) -> int:
     b = {u: 0.0 for u in G}
     cnt = {u: 0 for u in G}
     for (u, v), val in eb.items():
-        b[u] += val; cnt[u] += 1
-        b[v] += val; cnt[v] += 1
+        b[u] += val;
+        cnt[u] += 1
+        b[v] += val;
+        cnt[v] += 1
     for u in G:
         b[u] = b[u] / cnt[u] if cnt[u] else 0.0
 
@@ -64,8 +66,12 @@ def cost_bridge_capped(G: nx.Graph, node, H: int = 5, tau: int = 20) -> int:
     else:
         bnorm = {u: 0.0 for u in G}
 
-    # 4) compute cost only for the requested node
-    hub_penalty = 1 if G.degree(node) >= tau else 0
-    c = 1 + round((1 - bnorm[node]) * (H - 1)) + hub_penalty
-    c = max(1, min(H, c))
-    return int(c)
+    # 4) compute final capped costs
+    costs = {}
+    for u in G:
+        hub_penalty = 1 if G.degree(u) >= tau else 0
+        c = 1 + round((1 - bnorm[u]) * (H - 1)) + hub_penalty
+        c = max(1, min(H, c))
+        costs[u] = int(c)
+
+    return costs
