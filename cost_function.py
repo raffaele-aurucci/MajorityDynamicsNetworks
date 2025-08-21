@@ -51,9 +51,9 @@ def cost_bridge_capped(G: nx.Graph, H: int = 5, tau: int = 20) -> dict:
     b = {u: 0.0 for u in G}
     cnt = {u: 0 for u in G}
     for (u, v), val in eb.items():
-        b[u] += val;
+        b[u] += val
         cnt[u] += 1
-        b[v] += val;
+        b[v] += val
         cnt[v] += 1
     for u in G:
         b[u] = b[u] / cnt[u] if cnt[u] else 0.0

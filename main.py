@@ -1,5 +1,7 @@
 import networkx as nx
 import matplotlib.pyplot as plt
+import algorithms
+import cost_function
 
 G = nx.Graph()
 
@@ -24,6 +26,7 @@ def graph_info(G):
 
 print(graph_info(G))
 
+
 # Fixed layout with seed
 # pos = nx.spring_layout(graph, seed=28)
 
@@ -32,6 +35,6 @@ print(graph_info(G))
 # plt.show()
 
 
-# seed_set = algorithms.greedy_seed_set(G, 100, cost_function.cost_bridge_capped)
+# seed_set = algorithms.WTSS(G, 200, cost_function.cost_bridge_capped)
 # print("Seed set selected: ", seed_set)
 
