@@ -26,7 +26,6 @@ def graph_info(G):
 
 print(graph_info(G))
 
-
 # Fixed layout with seed
 # pos = nx.spring_layout(graph, seed=28)
 
@@ -34,7 +33,6 @@ print(graph_info(G))
 # nx.draw(graph, pos, node_size=10, with_labels=True, font_size=2)
 # plt.show()
 
-
-# seed_set = algorithms.WTSS(G, 200, cost_function.cost_bridge_capped)
-# print("Seed set selected: ", seed_set)
+seed_set = algorithms.greedy_seed_set(G, 10, cost_function.cost_bridge_capped, 'f3')
+print("Seed set selected: ", seed_set)
 
