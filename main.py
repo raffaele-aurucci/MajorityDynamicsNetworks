@@ -26,18 +26,18 @@ def graph_info(G):
 
 print(graph_info(G))
 
-# # Fixed layout with seed
-# pos = nx.spring_layout(G, seed=28)
-#
-# # Visualization graph
-# nx.draw(G, pos, node_size=10, with_labels=True, font_size=2)
-# plt.show()
+# Fixed layout with seed
+pos = nx.spring_layout(G, seed=28)
 
-seed_set = algorithms.greedy_seed_set(G, 404, cost_function.cost_bridge_capped, 'f1')
-print("Seed set selected: ", seed_set)
-influence_diffusion_set = influence_diffusion(G, seed_set)
-print("Influence diffusion set: ", influence_diffusion_set)
-print("len:", len(influence_diffusion_set)/G.number_of_nodes())
+# Visualization graph
+nx.draw(G, pos, node_size=10, with_labels=True, font_size=2)
+plt.show()
+
+# seed_set = algorithms.greedy_seed_set(G, 404, cost_function.cost_bridge_capped, 'f1')
+# print("Seed set selected: ", seed_set)
+# influence_diffusion_set = influence_diffusion(G, seed_set)
+# print("Influence diffusion set: ", influence_diffusion_set)
+# print("len:", len(influence_diffusion_set)/G.number_of_nodes())
 
 
 
