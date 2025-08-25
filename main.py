@@ -6,10 +6,10 @@ from influence_diffusion import influence_diffusion
 import sys, io, atexit
 
 # Principal parameters
-fn = algorithms.WTSS
-arg2 = 20
-arg3 = cost_function.random_cost
-arg4 = 'f3'  # imposta a None o rimuovi se non vuoi passare il 4° parametro
+fn = algorithms.greedy_seed_set
+k = 20
+cost_function = cost_function.random_cost
+heuristic = 'f3'  # imposta a None o rimuovi se non vuoi passare il 4° parametro
 dataset_path = 'datasets/ego-facebook.txt'
 
 # Fase preliminare per catturare tutto l'output di print e salvarlo su file alla fine
@@ -66,6 +66,7 @@ def graph_info(G):
         f"Highest degree: {max(dict(G.degree()).values())}\n"
         f"Average degree: {sum(dict(G.degree()).values()) / G.number_of_nodes():.2f}\n"
         f"Diameter: {nx.diameter(G)}\n"
+        f"Dataset name: {dataset_path.split("/")[1]}\n"
     )
 
 print(graph_info(G))
@@ -78,12 +79,12 @@ print(graph_info(G))
 #nx.draw(G, pos, node_size=10, with_labels=True, font_size=2)
 #plt.show()
 
-args = [G, arg2, arg3]
-if fn.__name__ == "greedy_seed_set" and arg4 is not None:
-    print(f"- Function: {fn.__name__} \n- k: {arg2} \n- Cost function: {arg3.__name__} \n- Euristic function: {arg4}\n")
-    args.append(arg4)
+args = [G, k, cost_function]
+if fn.__name__ == "greedy_seed_set" and heuristic is not None:
+    print(f"- Function: {fn.__name__} \n- k: {k} \n- Cost function: {cost_function.__name__} \n- Euristic function: {heuristic}\n")
+    args.append(heuristic)
 else:
-    print(f"- Function: {fn.__name__} \n- k: {arg2} \n- Cost function: {arg3.__name__}\n")
+    print(f"- Function: {fn.__name__} \n- k: {k} \n- Cost function: {cost_function.__name__}\n")
 
 seed_set = fn(*args)
 
