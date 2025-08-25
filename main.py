@@ -3,15 +3,59 @@ import matplotlib.pyplot as plt
 import algorithms
 import cost_function
 from influence_diffusion import influence_diffusion
+import sys, io, atexit
+
+# Principal parameters
+fn = algorithms.WTSS
+arg2 = 20
+arg3 = cost_function.random_cost
+arg4 = 'f3'  # imposta a None o rimuovi se non vuoi passare il 4° parametro
+dataset_path = 'datasets/ego-facebook.txt'
+
+# Fase preliminare per catturare tutto l'output di print e salvarlo su file alla fine
+class _StdoutTee(io.TextIOBase):
+    def __init__(self, original):
+        self._original = original
+        self._buf = io.StringIO()
+    def write(self, s):
+        self._buf.write(s)
+        return self._original.write(s)
+    def flush(self):
+        self._original.flush()
+    def getvalue(self):
+        return self._buf.getvalue()
+
+# Installa il "tee" su stdout
+_original_stdout = sys.stdout
+_stdout_tee = _StdoutTee(_original_stdout)
+sys.stdout = _stdout_tee
+
+_success = False  # salva i log solo se True
+
+def _flush_logs_to_file():
+    if not _success:
+        return
+    try:
+        with open('log.txt', 'a', encoding='utf-8') as f:
+            f.write(_stdout_tee.getvalue())
+    except Exception:
+        pass
+
+# Registra scrittura su file alla fine dell'esecuzione (solo se _success=True)
+atexit.register(_flush_logs_to_file)
+
+# Main code
 
 G = nx.Graph()
 
-with open('datasets/facebook_combined.txt', 'r') as f:
+with open(dataset_path, 'r') as f:
     for line in f:
         parts = line.strip().split()
-        if len(parts) == 2:
+        if len(parts) == 2: 
             u, v = map(int, parts)
             G.add_edge(u, v)
+
+print("Graph info:\n")
 
 def graph_info(G):
     return (
@@ -27,17 +71,27 @@ def graph_info(G):
 print(graph_info(G))
 
 # Fixed layout with seed
-pos = nx.spring_layout(G, seed=28)
+#pos = nx.spring_layout(G, seed=28)
 
+#print("disegnando grafo...")
 # Visualization graph
-nx.draw(G, pos, node_size=10, with_labels=True, font_size=2)
-plt.show()
+#nx.draw(G, pos, node_size=10, with_labels=True, font_size=2)
+#plt.show()
 
-# seed_set = algorithms.greedy_seed_set(G, 404, cost_function.cost_bridge_capped, 'f1')
-# print("Seed set selected: ", seed_set)
-# influence_diffusion_set = influence_diffusion(G, seed_set)
-# print("Influence diffusion set: ", influence_diffusion_set)
-# print("len:", len(influence_diffusion_set)/G.number_of_nodes())
+args = [G, arg2, arg3]
+if fn.__name__ == "greedy_seed_set" and arg4 is not None:
+    print(f"- Function: {fn.__name__} \n- k: {arg2} \n- Cost function: {arg3.__name__} \n- Euristic function: {arg4}\n")
+    args.append(arg4)
+else:
+    print(f"- Function: {fn.__name__} \n- k: {arg2} \n- Cost function: {arg3.__name__}\n")
 
+seed_set = fn(*args)
 
+print("Seed set lenght: ", len(seed_set))
+print("Seed set selected: ", seed_set)
+influence_diffusion_set = influence_diffusion(G, seed_set)
+print("Influence diffusion set lenght: ", len(influence_diffusion_set))
+print("diffusion ratio:", len(influence_diffusion_set)/G.number_of_nodes())
+print("\n------------------------------------------------\n")
 
+_success = True
