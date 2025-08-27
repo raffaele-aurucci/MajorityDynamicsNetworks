@@ -212,7 +212,7 @@ def WTSS(G: nx.Graph, budget: int, cost_function: Callable) -> set:
             break
 
         # Update delta and neighbor sets for all cases
-        for u in N[node]:
+        for u in N[node].copy():
             if u in U:
                 delta[u] -= 1
                 N[u].discard(node)
