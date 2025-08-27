@@ -4,7 +4,7 @@ import networkx as nx
 
 # Random function
 def random_cost(G: nx.Graph , node) -> int:
-    return random.randint(1,3)
+    return random.randint(1,9)
 
 # Half node degree function
 def half_node_degree_cost(G: nx.Graph, node) -> int:
