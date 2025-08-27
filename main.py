@@ -9,7 +9,6 @@ dataset_path = 'datasets/out.as20000102.txt'
 # Parametri principali
 parameters = {
     "fn": [algorithms.greedy_seed_set, algorithms.WTSS, algorithms.MLPA],
-    "K": [32, ],
     "cost_function": [
         cost_function.random_cost,
         cost_function.half_node_degree_cost,
@@ -17,6 +16,9 @@ parameters = {
     ],
     "euristic": ["f1", "f2", "f3"],  # solo quando fn = algorithms.greedy_seed_set
 }
+
+# Percentuali di test
+percentiles = [0.5, 1, 2, 5, 10, 20]
 
 # Costruzione grafo
 G = nx.Graph()
@@ -39,54 +41,57 @@ def graph_info(G):
         "dataset_name": dataset_path.split('/')[1],
     }
 
+def compute_k_values(G, cost_fn):
+    if cost_fn.__name__ == "random_cost":
+        n = G.number_of_nodes()
+        ks = [max(1, int(n * p / 100)) for p in percentiles]
+    elif cost_fn.__name__ == "half_node_degree_cost":
+        m = G.number_of_edges()
+        ks = [max(1, int(m * p / 100)) for p in percentiles]
+    elif cost_fn.__name__ == "cost_bridge_capped":
+        # somma dei costi dei nodi (H massimo 5)
+        costs = cost_fn(G)
+        total_cost = sum(costs.values())
+        ks = [max(1, int(total_cost * p / 100)) for p in percentiles]
+    else:
+        ks = [32]  # default fallback
+    return ks
+
 # --- CICLO PER OGNI COST FUNCTION ---
 for cfun in parameters["cost_function"]:
-    results = {
-        "experiments": []
-    }
+    results = {"experiments": []}
 
-    # Calcolo il numero totale di combinazioni (serve a tqdm per stimare il progresso)
-    total_experiments = 0
-    for fn in parameters["fn"]:
-        euristics = parameters["euristic"] if fn.__name__ == "greedy_seed_set" else [None]
-        total_experiments += len(parameters["K"]) * len(euristics)
+    ks_list = compute_k_values(G, cfun)
+    total_experiments = sum(len(parameters["euristic"]) if fn.__name__=="greedy_seed_set" else 1 for fn in parameters["fn"]) * len(ks_list)
 
-    print(f"\n▶️ Cost function: {cfun.__name__}")
+    print(f"\nCost function: {cfun.__name__} | k values: {ks_list}")
 
-    # Barra di progresso
     with tqdm(total=total_experiments, desc=f"Running {cfun.__name__}") as pbar:
-        for fn, k in itertools.product(parameters["fn"], parameters["K"]):
-            euristics = parameters["euristic"] if fn.__name__ == "greedy_seed_set" else [None]
+        for k in ks_list:
+            for fn in parameters["fn"]:
+                euristics = parameters["euristic"] if fn.__name__ == "greedy_seed_set" else [None]
+                for heuristic in euristics:
+                    args = [G, k, cfun]
+                    if fn.__name__ == "greedy_seed_set" and heuristic is not None:
+                        args.append(heuristic)
 
-            for heuristic in euristics:
-                args = [G, k, cfun]
-                if fn.__name__ == "greedy_seed_set" and heuristic is not None:
-                    args.append(heuristic)
+                    seed_set = fn(*args)
+                    influence_diffusion_set = influence_diffusion(G, seed_set)
 
-                seed_set = fn(*args)
-                influence_diffusion_set = influence_diffusion(G, seed_set)
+                    exp_result = {
+                        "algorithm": fn.__name__,
+                        "k": k,
+                        "euristic": heuristic,
+                        "seed_set_length": len(seed_set),
+                        "seed_set": list(seed_set),
+                        "influence_diffusion_length": len(influence_diffusion_set),
+                        "diffusion_ratio": len(influence_diffusion_set) / G.number_of_nodes()
+                    }
 
-                exp_result = {
-                    "algorithm": fn.__name__,
-                    "k": k,
-                    "euristic": heuristic,
-                    "seed_set_length": len(seed_set),
-                    "seed_set": list(seed_set),
-                    "influence_diffusion_length": len(influence_diffusion_set),
-                    "diffusion_ratio": len(influence_diffusion_set) / G.number_of_nodes()
-                }
+                    results["experiments"].append(exp_result)
+                    pbar.update(1)
 
-                results["experiments"].append(exp_result)
-                pbar.update(1)
-
-    # --- SALVA UN FILE JSON PER OGNI FUNZIONE DI COSTO ---
     filename = f"log_{cfun.__name__}.json"
     with open(filename, "w", encoding="utf-8") as f:
         json.dump(results, f, indent=4)
-
-    print(f"✅ Salvato {filename}")
-
-
-
-
-
+    print(f"Salvato {filename}")
