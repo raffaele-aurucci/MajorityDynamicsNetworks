@@ -10,8 +10,8 @@ dataset_path = 'datasets/out.as20000102.txt'
 parameters = {
     "fn": [algorithms.greedy_seed_set, algorithms.WTSS, algorithms.MLPA],
     "cost_function": [
-        cost_function.random_cost,
-        cost_function.half_node_degree_cost,
+        # cost_function.random_cost,
+        # cost_function.half_node_degree_cost,
         cost_function.cost_bridge_capped,
     ],
     "euristic": ["f1", "f2", "f3"],  # solo quando fn = algorithms.greedy_seed_set
@@ -67,6 +67,8 @@ for cfun in parameters["cost_function"]:
     print(f"\nCost function: {cfun.__name__} | k values: {ks_list}")
 
     with tqdm(total=total_experiments, desc=f"Running {cfun.__name__}") as pbar:
+        filename = f"log_{cfun.__name__}.json"
+
         for k in ks_list:
             for fn in parameters["fn"]:
                 euristics = parameters["euristic"] if fn.__name__ == "greedy_seed_set" else [None]
@@ -89,9 +91,7 @@ for cfun in parameters["cost_function"]:
                     }
 
                     results["experiments"].append(exp_result)
-                    pbar.update(1)
 
-    filename = f"log_{cfun.__name__}.json"
-    with open(filename, "w", encoding="utf-8") as f:
-        json.dump(results, f, indent=4)
-    print(f"Salvato {filename}")
+                    # salvataggio immediato
+                    with open(filename, "w", encoding="utf-8") as f:
+                        json.dump(results, f, indent=4)
