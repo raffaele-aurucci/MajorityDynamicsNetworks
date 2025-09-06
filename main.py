@@ -1,4 +1,4 @@
-import itertools, json
+import json
 import networkx as nx
 import algorithms, cost_function
 from influence_diffusion import influence_diffusion
@@ -6,21 +6,21 @@ from tqdm import tqdm
 
 dataset_path = 'datasets/out.as20000102.txt'
 
-# Parametri principali
+# Main parameters for test
 parameters = {
     "fn": [algorithms.greedy_seed_set, algorithms.WTSS, algorithms.MLPA],
     "cost_function": [
-        # cost_function.random_cost,
-        # cost_function.half_node_degree_cost,
+        cost_function.random_cost,
+        cost_function.half_node_degree_cost,
         cost_function.cost_bridge_capped,
     ],
-    "euristic": ["f1", "f2", "f3"],  # solo quando fn = algorithms.greedy_seed_set
+    "euristic": ["f1", "f2", "f3"],  # when fn = algorithms.greedy_seed_set
 }
 
-# Percentuali di test
+# Percentiles
 percentiles = [0.5, 1, 2, 5, 10, 20]
 
-# Costruzione grafo
+# Build of graphs
 G = nx.Graph()
 with open(dataset_path, 'r') as f:
     for line in f:
@@ -49,7 +49,7 @@ def compute_k_values(G, cost_fn):
         m = G.number_of_edges()
         ks = [max(1, int(m * p / 100)) for p in percentiles]
     elif cost_fn.__name__ == "cost_bridge_capped":
-        # somma dei costi dei nodi (H massimo 5)
+        # Cost's of node (H = max 5)
         costs = cost_fn(G)
         total_cost = sum(costs.values())
         ks = [max(1, int(total_cost * p / 100)) for p in percentiles]
@@ -57,7 +57,7 @@ def compute_k_values(G, cost_fn):
         ks = [32]  # default fallback
     return ks
 
-# --- CICLO PER OGNI COST FUNCTION ---
+# --- Loop for each cost function ---
 for cfun in parameters["cost_function"]:
     results = {"experiments": []}
 
@@ -92,6 +92,6 @@ for cfun in parameters["cost_function"]:
 
                     results["experiments"].append(exp_result)
 
-                    # salvataggio immediato
+                    # save
                     with open(filename, "w", encoding="utf-8") as f:
                         json.dump(results, f, indent=4)
