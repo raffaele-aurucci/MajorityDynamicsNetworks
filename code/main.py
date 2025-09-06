@@ -45,6 +45,7 @@ def graph_info(G):
         "highest_degree": max(dict(G.degree()).values()),
         "average_degree": sum(dict(G.degree()).values()) / G.number_of_nodes(),
         "diameter": nx.diameter(G),
+        "average_clustering" : nx.average_clustering(G),
         "dataset_name": dataset_path.split('/')[1],
     }
 
@@ -163,7 +164,7 @@ def main():
     cbar.ax.set_yticklabels([str(t) for t in ticks])
 
     # Title
-    plt.title(f"Graph visualization: Autonomous systems AS-733", fontsize=14, fontweight="bold")
+    plt.title(f"Graph Autonomous systems AS-733", fontsize=14, fontweight="bold")
     plt.show()
 
     # Run experiments
