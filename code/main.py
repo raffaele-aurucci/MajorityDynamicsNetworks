@@ -4,7 +4,7 @@ import algorithms, cost_function
 from influence_diffusion import influence_diffusion
 from tqdm import tqdm
 
-dataset_path = 'datasets/out.as20000102.txt'
+dataset_path = '../datasets/out.as20000102.txt'
 
 # Main parameters for test
 parameters = {
