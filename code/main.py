@@ -158,8 +158,8 @@ def main():
     cbar.set_label("Node degree", fontsize=10)
 
     # Ticks each 200
-    ticks = range(0, 1401, 200)
-    cbar.set_ticks([t / 1400 * 10 for t in ticks])
+    ticks = range(0, 1460, 200)
+    cbar.set_ticks([t / 1460 * 10 for t in ticks])
     cbar.ax.set_yticklabels([str(t) for t in ticks])
 
     # Title
