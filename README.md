@@ -2,17 +2,17 @@
 
 The **majority domination problem** is a variant of the classical *dominating set* problem in graph theory. Given a graph \(G=(V,E)\), where \(V\) is the set of vertices and \(E\) the set of edges, a subset \(D \subseteq V\) is a **dominating set** if every vertex not in \(D\) has at least one neighbor in \(D\):
 
-\[
+$$
 \forall v \in V \setminus D, \quad |N(v) \cap D| \ge 1
-\]
+$$
 
 where \(N(v)\) denotes the set of neighbors of vertex \(v\).
 
 In **majority domination**, the requirement is stronger: a set \(D \subseteq V\) is a **majority dominating set** if every vertex \(v \in V \setminus D\) has at least half of its neighbors in \(D\). Formally, letting \(d(v) = |N(v)|\) be the degree of \(v\):
 
-\[
+$$
 \forall v \in V \setminus D, \quad |N(v) \cap D| \ge \left\lceil \frac{d(v)}{2} \right\rceil
-\]
+$$
 
 Finding a minimum-size majority dominating set is **NP-hard**, making exact solutions impractical for large graphs.
 
