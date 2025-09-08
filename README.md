@@ -7,15 +7,15 @@ Project of course **Reti Sociali** - University of Salerno.
 
 ## Introduction
 
-The **majority domination problem** is a variant of the classical *dominating set* problem in graph theory. Given a graph \(G=(V,E)\), where \(V\) is the set of vertices and \(E\) the set of edges, a subset \(D \subseteq V\) is a **dominating set** if every vertex not in \(D\) has at least one neighbor in \(D\):
+The **majority domination problem** is a variant of the classical *dominating set* problem in graph theory. Given a graph $G=(V,E)$, where $V$ is the set of vertices and $E$ the set of edges, a subset $D \subseteq V$ is a **dominating set** if every vertex not in $D$ has at least one neighbor in $D$:
 
 $$
 \forall v \in V \setminus D, \quad |N(v) \cap D| \ge 1
 $$
 
-where \(N(v)\) denotes the set of neighbors of vertex \(v\).
+where $N(v)$ denotes the set of neighbors of vertex $v$.
 
-In **majority domination**, the requirement is stronger: a set \(D \subseteq V\) is a **majority dominating set** if every vertex \(v \in V \setminus D\) has at least half of its neighbors in \(D\). Formally, letting \(d(v) = |N(v)|\) be the degree of \(v\):
+In **majority domination**, the requirement is stronger: a set $D \subseteq V$ is a **majority dominating set** if every vertex $v \in V \setminus D$ has at least half of its neighbors in $D$. Formally, letting $d(v) = |N(v)|$ be the degree of $v$:
 
 $$
 \forall v \in V \setminus D, \quad |N(v) \cap D| \ge \left\lceil \frac{d(v)}{2} \right\rceil
@@ -27,7 +27,7 @@ Finding a minimum-size majority dominating set is **NP-hard**, making exact solu
 
 Based on this concept, the **Majority Cascade** models influence diffusion in networks. Starting from an initial seed set, nodes activate when a majority of their neighbors are active and remain active permanently. The process ends when a stable state is reached.
 
-When each node has an associated cost (**cost-constrained majority cascade**), the goal is to select a seed set that maximizes activations while respecting a budget \(k\). This problem is **NP-hard** and hard to approximate, often requiring heuristic approaches.
+When each node has an associated cost (**cost-constrained majority cascade**), the goal is to select a seed set that maximizes activations while respecting a budget $k$. This problem is **NP-hard** and hard to approximate, often requiring heuristic approaches.
 
 ---
 
