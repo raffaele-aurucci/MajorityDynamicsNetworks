@@ -1,4 +1,4 @@
-# Majority Dynamics in Networks
+# Majority Dynamics in Network
 
 The **majority domination problem** is a variant of the classical *dominating set* problem in graph theory. Given a graph \(G=(V,E)\), where \(V\) is the set of vertices and \(E\) the set of edges, a subset \(D \subseteq V\) is a **dominating set** if every vertex not in \(D\) has at least one neighbor in \(D\):
 
