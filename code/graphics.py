@@ -1,7 +1,12 @@
 import json
+
+import networkx as nx
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
+
+from algorithms import _LPA_partition
+from main import build_graph
 
 # Set a clean plotting style without grid
 sns.set_theme(style="white")
@@ -331,5 +336,45 @@ def plot_cost_bridge_capped():
         print(f"An error occurred while processing the file: {e}")
 
 
+def plot_communities():
+
+    def _plot_communities(G, communities):
+
+        # Sorted top 4 community
+        communities_sorted = sorted(communities, key=len, reverse=True)[:4]
+        colors = ['lightcoral', 'skyblue', 'lightgreen', 'orange']  # Colori diversi
+        sizes = [200, 150, 100, 80]  # Dimensioni dei nodi della comunità
+
+        # Position
+        pos = nx.spring_layout(G, seed=42)
+
+        fig, axes = plt.subplots(2, 2, figsize=(16, 12))
+        axes = axes.flatten()
+
+        for i, (comm, color, size) in enumerate(zip(communities_sorted, colors, sizes)):
+
+            # Draw edges
+            nx.draw_networkx_edges(G, pos, ax=axes[i], alpha=0.3)
+
+            # Draw nodes not in community (gray)
+            other_nodes = [n for n in G.nodes() if n not in comm]
+            nx.draw_networkx_nodes(G, pos, nodelist=other_nodes, node_color='lightgrey', node_size=20, ax=axes[i])
+
+            # Draw node in community (color)
+            nx.draw_networkx_nodes(G, pos, nodelist=comm, node_color=color, node_size=size, ax=axes[i])
+
+            axes[i].set_title(f"Community {i+1} ({len(comm)} nods)")
+            axes[i].axis('off')
+
+        plt.tight_layout()
+        plt.show()
+
+
+    dataset_path = "../datasets/out.as20000102.txt"
+    G = build_graph(dataset_path)
+    communities = _LPA_partition(G)
+    _plot_communities(G, communities)
+
+
 if __name__ == '__main__':
-    plot_half_node_degree_cost()
+    plot_communities()

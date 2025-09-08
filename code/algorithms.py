@@ -234,6 +234,7 @@ def _LPA_partition(G, max_iter=20):
     Returns:
         List of sets of nodes representing communities
     """
+    random.seed(42)
     labels = {v: v for v in G.nodes()}
     nodes = list(G.nodes())
     for _ in range(max_iter):
