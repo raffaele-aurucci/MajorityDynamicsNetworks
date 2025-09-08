@@ -1,4 +1,4 @@
-# Majority Dynamics in Network
+# Majority Dynamics in Networks
 
 Project of course **Reti Sociali** - University of Salerno.
 
