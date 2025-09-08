@@ -370,7 +370,7 @@ def plot_communities():
         plt.show()
 
 
-    dataset_path = "../datasets/out.as20000102.txt"
+    dataset_path = "../dataset/out.as20000102.txt"
     G = build_graph(dataset_path)
     communities = _LPA_partition(G)
     _plot_communities(G, communities)
